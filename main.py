@@ -5,7 +5,7 @@ from flightgear_python.fg_if import FDMConnection, CtrlsConnection
 
 roll_deg_setpoint = 0.0  # Let's say the setpoint is 5deg clockwise
 pitch_deg_setpoint = 1.0
-yaw_deg_setpoint = 270
+yaw_deg_setpoint = 0.0
 
 pid_roll = PID(5, 1, 0.3, setpoint=roll_deg_setpoint, auto_mode= True, sample_time=0.01)
 pid_pitch = PID(5, 1, 0.3, setpoint=pitch_deg_setpoint, auto_mode= True, sample_time=0.01)
@@ -40,7 +40,7 @@ def ctrls_callback(ctrls_data, event_pipe):
 def fdm_callback(fdm_data, event_pipe):
     pitch_deg = math.degrees(fdm_data.theta_rad) #PITCH
     roll_deg = math.degrees(fdm_data.phi_rad) #ROLL
-    yaw_deg = math.degrees(fdm_data.psi_rad) #YAW
+    yaw_deg = math.degrees(fdm_data.beta_rad) #YAW
     event_pipe.child_send((pitch_deg,roll_deg,yaw_deg)) # Send tuple to parent
 
 """

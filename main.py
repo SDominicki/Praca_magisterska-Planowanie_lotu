@@ -5,13 +5,13 @@ from flightgear_python.fg_if import TelnetConnection
 roll_deg_setpoint = 0.0
 pitch_deg_setpoint = 0.0
 heading_setpoint = 0.0
-climb_rate_setpoint = 5.0
+climb_rate_setpoint = 9.0
 sm = 0
 
 pid_roll = PID(15, 1, 0.3, setpoint=roll_deg_setpoint, output_limits=(-0.5,0.5), sample_time=0.5, starting_output=0)
 pid_pitch = PID(1.1, 0.1, 0.3, setpoint=pitch_deg_setpoint, output_limits=(-0.1,0.1), sample_time=0.5, starting_output=0)
 pid_heading = PID(1.1, 0.1, 0.3, setpoint=heading_setpoint, output_limits=(-0.1,0.1), sample_time=0.5, starting_output=0)
-pid_climb_rate = PID(1.1, 0.1, 15, setpoint=climb_rate_setpoint*60, output_limits=(-0.1,0.1), sample_time=0.5, starting_output=0)
+pid_climb_rate = PID(0.16, 0.5, 0, setpoint=climb_rate_setpoint*60, output_limits=(-0.1,0.1), sample_time=0.5, starting_output=0)
 
 telnet_conn = TelnetConnection('localhost', 5500)
 telnet_conn.connect()  # Make an actual connection
@@ -68,7 +68,7 @@ def climb_rate_calculator():
         elevator_tbs = climb_rate_error * (pid_climb_rate(climb_rate)*climb_rate_constant)
 
     if (climb_rate_error < 50 and climb_rate_error > -50):
-        elevator_tbs = climb_rate_error * (pid_climb_rate(climb_rate)*(climb_rate_constant/5))
+        elevator_tbs = climb_rate_error * (pid_climb_rate(climb_rate)*(climb_rate_constant*0.3))
 
     print(f"Climb rate error = {round(climb_rate_error,2)} ; Climb rate = {round(climb_rate,2)} ; Elevator tbs = {round(elevator_tbs,2)}")
     

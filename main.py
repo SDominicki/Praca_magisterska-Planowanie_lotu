@@ -1,4 +1,5 @@
 from simple_pid import PID
+import serial
 import time
 from flightgear_python.fg_if import TelnetConnection
 
@@ -15,6 +16,13 @@ pid_climb_rate = PID(0.16, 0.5, 0, setpoint=climb_rate_setpoint*60, output_limit
 
 telnet_conn = TelnetConnection('localhost', 5500)
 telnet_conn.connect()  # Make an actual connection
+
+arduino = serial.Serial(port='COM13',   baudrate=115200, timeout=0.01)
+
+def write_read(x):
+    arduino.write(bytes(x,   'utf-8'))
+    data = arduino.readline()
+    return   data
 
 def roll_calculator():
 
@@ -35,7 +43,6 @@ def roll_calculator():
     return aileron_tbs
 
 def pitch_calculator():
-
 
     pitch_deg = telnet_conn.get_prop('/orientation/pitch-deg')
 
@@ -93,6 +100,8 @@ while True:
 
     start = time.time()
 
+    pid_climb_rate.setpoint(5)
+
     #alt_ft = telnet_conn.get_prop('/position/altitude-ft')
     
     if(sm==0):
@@ -106,6 +115,10 @@ while True:
     
     if(sm>=2):
         sm=0
+
+    data_in = f"{sm}A{round(aileron,3)};E{round(elevator,3)};"
+    data_out = write_read(data_in)
+    values = data_out.decode()
 
     end = time.time()
     #print(f"Loop time = {round(end-start,2)}")

@@ -1,7 +1,7 @@
 import serial
 import time
 
-arduino = serial.Serial(port='COM4',   baudrate=115200, timeout=0.1)
+arduino = serial.Serial(port='COM13',   baudrate=115200, timeout=0.01)
 num = 0
 aileron = 0.0
 elevator = 0.0

@@ -9,21 +9,21 @@
     <airport type="string">EPWA</airport>
   </destination>
   <route>
-      <wp n="0">
-      <type type="string">basic</type>
-      <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">406</altitude-ft>
-      <ident type="string">RW29</ident>
-      <lon type="double">16.89795876</lon>
-      <lat type="double">51.09896088</lat>
-    </wp>
-    <wp n="1">
+    <wp n="0">
       <departure type="bool">true</departure>
       <altitude-ft type="double">0</altitude-ft>
       <type type="string">navaid</type>
       <ident type="string">EPWR</ident>
       <lon type="double">16.88583374</lon>
       <lat type="double">51.10277939</lat>
+    </wp>
+    <wp n="1">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">406</altitude-ft>
+      <ident type="string">RW29</ident>
+      <lon type="double">16.89795876</lon>
+      <lat type="double">51.09896088</lat>
     </wp>
     <wp n="2">
       <type type="string">basic</type>

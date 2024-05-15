@@ -2,6 +2,9 @@ from simple_pid import PID
 import serial
 import time
 from flightgear_python.fg_if import TelnetConnection
+from xml_reader import xml_reader
+
+points = xml_reader()
 
 roll_deg_setpoint = 0.0
 pitch_deg_setpoint = 0.0

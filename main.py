@@ -5,6 +5,11 @@ from flightgear_python.fg_if import TelnetConnection
 from xml_reader import xml_reader
 
 points = xml_reader()
+point_len = len(points)
+i=0
+x=0
+
+arduino = serial.Serial(port='COM5', baudrate=115200, timeout=0.01)
 
 roll_deg_setpoint = 0.0
 pitch_deg_setpoint = 0.0
@@ -19,13 +24,6 @@ pid_climb_rate = PID(0.16, 0.5, 0, setpoint=climb_rate_setpoint*60, output_limit
 
 telnet_conn = TelnetConnection('localhost', 5500)
 telnet_conn.connect()  # Make an actual connection
-
-arduino = serial.Serial(port='COM13',   baudrate=115200, timeout=0.01)
-
-def write_read(x):
-    arduino.write(bytes(x,   'utf-8'))
-    data = arduino.readline()
-    return   data
 
 def roll_calculator():
 
@@ -99,11 +97,48 @@ def heading_calculator():
 
     return true_heading_error
 
+def position_sender():
+
+    longitude = telnet_conn.get_prop('/position/longitude-deg')
+    latitude = telnet_conn.get_prop('/position/latitude-deg')
+
+    position = f"{longitude};{latitude}" #16.88583374;51.10277939
+    arduino.flush()
+    arduino.write(bytes(position.encode()))
+
+    return
+
+while arduino.readline().decode() != 'ReadyA':
+        time.sleep(0.05)
+        arduino.write(bytes("ReadyP", 'utf-8'))
+
+time.sleep(0.5)
+
+arduino.write(bytes(str(len(points)), 'utf-8'))
+
+time.sleep(0.5)
+
+while i < len(points):
+    
+    to_send = str(points[i]) #16.88583374;51.10277939;i
+
+    arduino.write(bytes(to_send.encode()))
+    print(to_send)
+    time.sleep(0.2)
+    i = i + 1
+
+time.sleep(1)
+arduino.flush()
+
+while arduino.readline().decode() != 'ReadyA':
+        time.sleep(0.05)
+        arduino.write(bytes("ReadyP", 'utf-8'))
+
 while True:
 
     start = time.time()
 
-    pid_climb_rate.setpoint(5)
+    position_sender()
 
     #alt_ft = telnet_conn.get_prop('/position/altitude-ft')
     
@@ -118,10 +153,6 @@ while True:
     
     if(sm>=2):
         sm=0
-
-    data_in = f"{sm}A{round(aileron,3)};E{round(elevator,3)};"
-    data_out = write_read(data_in)
-    values = data_out.decode()
 
     end = time.time()
     #print(f"Loop time = {round(end-start,2)}")

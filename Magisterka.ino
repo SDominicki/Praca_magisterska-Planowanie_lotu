@@ -74,14 +74,15 @@ void setup()
 
 void loop()
 {
-
+  position_getter();
+/*
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print(GPS[n],8);
+  lcd.print(Tangents[n],8);
   lcd.setCursor(14, 0);
-  lcd.print(iteration);
+  lcd.print(Turns[n]);
   lcd.setCursor(0, 1);
-  lcd.print(GPS[n+1],8);
+  lcd.print(Tangents[n+1],8);
   lcd.setCursor(14, 1);
   lcd.print(n);
 
@@ -89,14 +90,26 @@ void loop()
 
   n = n + 2;
 
-  if (n >= len)
+  if (n >= len-6)
     {
       n = 0;
     }
+*/
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(Plane_curr[0],8);
+  lcd.setCursor(0, 1);
+  lcd.print(Plane_curr[1],8);
+
+  delay(100);
 }
 
 void position_getter()
 {
+
+  Plane_prev[0] = Plane_curr[0];
+  Plane_prev[1] = Plane_curr[1];
+
   if (Serial.available() > 0)
   {
     String position = Serial.readString();
@@ -104,12 +117,8 @@ void position_getter()
     int breakpoint = position.indexOf(";");
     Plane_curr[0] = position.substring(0,breakpoint).toFloat();
     Plane_curr[1] = position.substring(breakpoint+1).toFloat();
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(Plane_curr[0]);
-    lcd.setCursor(0, 1);
-    lcd.print(Plane_curr[1]);
   }
+  
 }
 
 void pointreader()

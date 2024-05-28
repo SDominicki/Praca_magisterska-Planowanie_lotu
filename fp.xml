@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PropertyList>
   <version type="int">2</version>
-  <source type="string">Created by Little Navmap Version 3.0.6 (revision 413d34ee) on 2024 04 10T12:00:19</source>
+  <source type="string">Created by Little Navmap Version 3.0.5 (revision b4eecb60) on 2024 05 21T13:41:56</source>
   <departure>
     <airport type="string">EPWR</airport>
   </departure>
@@ -11,45 +11,36 @@
   <route>
     <wp n="0">
       <departure type="bool">true</departure>
-      <altitude-ft type="double">0</altitude-ft>
       <type type="string">navaid</type>
       <ident type="string">EPWR</ident>
       <lon type="double">16.88583374</lon>
-      <lat type="double">51.10277939</lat>
+      <lat type="double">51.10277557</lat>
     </wp>
     <wp n="1">
-      <type type="string">basic</type>
+      <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">406</altitude-ft>
-      <ident type="string">RW29</ident>
-      <lon type="double">16.89795876</lon>
-      <lat type="double">51.09896088</lat>
+      <altitude-ft type="double">1959</altitude-ft>
+      <ident type="string">WR491</ident>
+      <lon type="double">16.77278137</lon>
+      <lat type="double">51.13733292</lat>
     </wp>
     <wp n="2">
-      <type type="string">basic</type>
+      <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">1396</altitude-ft>
-      <ident type="string">RW29+3</ident>
-      <lon type="double">16.82638550</lon>
-      <lat type="double">51.12086868</lat>
+      <altitude-ft type="double">9351</altitude-ft>
+      <ident type="string">WR707</ident>
+      <lon type="double">17.16152954</lon>
+      <lat type="double">51.42258453</lat>
     </wp>
     <wp n="3">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">3256</altitude-ft>
-      <ident type="string">MISKA</ident>
-      <lon type="double">16.93444443</lon>
-      <lat type="double">51.18583298</lat>
-    </wp>
-    <wp n="4">
-      <type type="string">navaid</type>
-      <alt-restrict type="string">at</alt-restrict>
       <altitude-ft type="double">10000</altitude-ft>
       <ident type="string">BADNO</ident>
-      <lon type="double">17.67833328</lon>
+      <lon type="double">17.67832947</lon>
       <lat type="double">51.75000000</lat>
     </wp>
-    <wp n="5">
+    <wp n="4">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
       <altitude-ft type="double">10000</altitude-ft>
@@ -57,13 +48,21 @@
       <lon type="double">18.00000000</lon>
       <lat type="double">51.99666595</lat>
     </wp>
+    <wp n="5">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">10000</altitude-ft>
+      <ident type="string">FAFEN</ident>
+      <lon type="double">18.37277222</lon>
+      <lat type="double">52.08944321</lat>
+    </wp>
     <wp n="6">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
       <altitude-ft type="double">10000</altitude-ft>
       <ident type="string">UTOLU</ident>
-      <lon type="double">18.86750031</lon>
-      <lat type="double">51.89694595</lat>
+      <lon type="double">18.86750793</lon>
+      <lat type="double">51.89694214</lat>
     </wp>
     <wp n="7">
       <type type="string">navaid</type>
@@ -78,7 +77,7 @@
       <alt-restrict type="string">at</alt-restrict>
       <altitude-ft type="double">10000</altitude-ft>
       <ident type="string">DERAM</ident>
-      <lon type="double">19.28083420</lon>
+      <lon type="double">19.28083801</lon>
       <lat type="double">51.84694290</lat>
     </wp>
     <wp n="9">
@@ -86,45 +85,52 @@
       <alt-restrict type="string">at</alt-restrict>
       <altitude-ft type="double">10000</altitude-ft>
       <ident type="string">POLON</ident>
-      <lon type="double">19.65611076</lon>
+      <lon type="double">19.65611267</lon>
       <lat type="double">51.79999924</lat>
     </wp>
     <wp n="10">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">8012</altitude-ft>
-      <ident type="string">KUKOP</ident>
-      <lon type="double">20.41055489</lon>
-      <lat type="double">52.14777756</lat>
+      <altitude-ft type="double">10000</altitude-ft>
+      <ident type="string">SUFLU</ident>
+      <lon type="double">20.11111450</lon>
+      <lat type="double">51.86972046</lat>
     </wp>
     <wp n="11">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">4291</altitude-ft>
-      <ident type="string">WAR</ident>
-      <lon type="double">20.65716743</lon>
-      <lat type="double">52.25925064</lat>
+      <altitude-ft type="double">8386</altitude-ft>
+      <ident type="string">KUKOP</ident>
+      <lon type="double">20.41055298</lon>
+      <lat type="double">52.14777756</lat>
     </wp>
     <wp n="12">
-      <type type="string">basic</type>
+      <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">1360</altitude-ft>
-      <ident type="string">RW11+3</ident>
-      <lon type="double">20.87252808</lon>
-      <lat type="double">52.19224930</lat>
+      <altitude-ft type="double">4610</altitude-ft>
+      <ident type="string">WAR</ident>
+      <lon type="double">20.65721130</lon>
+      <lat type="double">52.25916672</lat>
     </wp>
     <wp n="13">
       <type type="string">basic</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">362</altitude-ft>
+      <altitude-ft type="double">1636</altitude-ft>
+      <ident type="string">RW11+3</ident>
+      <lon type="double">20.87252808</lon>
+      <lat type="double">52.19224930</lat>
+    </wp>
+    <wp n="14">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">630</altitude-ft>
       <ident type="string">RW11</ident>
       <lon type="double">20.94671440</lon>
       <lat type="double">52.17147446</lat>
     </wp>
-    <wp n="14">
+    <wp n="15">
       <approach type="bool">true</approach>
       <type type="string">navaid</type>
-      <altitude-ft type="double">0</altitude-ft>
       <ident type="string">EPWA</ident>
       <lon type="double">20.96722221</lon>
       <lat type="double">52.16583252</lat>

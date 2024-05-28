@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.17">
+    <grammar name="BIN grammar" start="id:1" author="Gasiba" uti="com.apple.macbinary-archive">
+        <description>Grammar for BIN files</description>
+        <structure name="User Aircraft" id="8" encoding="ISO_8859-1:1987" endian="big" signed="no">
+            <structref name="Aircraft" id="76" structure="id:9"/>
+            <number name="windSpeedKts" id="41" type="float" length="32" lengthunit="bit" endian="little"/>
+            <number name="windDirectionDegT" id="42" type="float" length="32" lengthunit="bit" endian="little"/>
+            <number name="altitudeAboveGroundFt" id="43" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="groundAltitudeFt" id="44" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="altitudeAutopilotFt" id="45" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="ambientTemperatureCelsius" id="46" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="totalAirTemperatureCelsius" id="47" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="seaLevelPressureMbar" id="48" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="pitotIcePercent" id="49" type="integer" length="8" lengthunit="bit" endian="big"/>
+            <number name="structuralIcePercent" id="50" type="integer" length="1"/>
+            <number name="aoaIcePercent" id="51" type="integer" length="1"/>
+            <number name="inletIcePercent" id="52" type="integer" length="1"/>
+            <number name="propIcePercent" id="53" type="integer" length="1"/>
+            <number name="statIcePercent" id="54" type="integer" length="1"/>
+            <number name="windowIcePercent" id="55" type="integer" length="1"/>
+            <number name="carbIcePercent" id="56" type="integer" length="1"/>
+            <number name="airplaneTotalWeightLbs" id="57" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="airplaneMaxGrossWeightLbs" id="58" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="airplaneEmptyWeightLbs" id="59" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="fuelTotalQuantityGallons" id="60" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="fuelTotalWeightLbs" id="61" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="fuelFlowPPH" id="62" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="fuelFlowGPH" id="63" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="magVarDeg" id="64" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="ambientVisibilityMeter" id="67" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="trackMagDeg" id="68" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="trackTrueDeg" id="69" type="float" length="32" lengthunit="bit" endian="big"/>
+            <binary name="localDateTime" id="72" length="13"/>
+            <binary name="zuluDateTime" id="73" length="13"/>
+        </structure>
+        <structure name="Aircraft" id="9" encoding="ISO_8859-1:1987" endian="big" signed="no">
+            <number name="objectId" id="10" strokecolor="FEAEFF" type="integer" length="4" endian="big"/>
+            <binary name="byteFlags" id="11" length="1"/>
+            <binary name="shortFlags" id="12" length="2"/>
+            <string name="airplaneTitle" id="13" repeatmin="0" type="pascal"/>
+            <string name="airplaneModel" id="14" repeatmin="0" type="pascal"/>
+            <string name="airplaneReg" id="15" type="pascal"/>
+            <string name="airplaneType" id="16" repeatmin="0" type="pascal"/>
+            <string name="airplaneAirline" id="17" type="pascal"/>
+            <string name="airplaneFlightNumber" id="18" repeatmin="0" type="pascal"/>
+            <string name="fromIdent" id="19" repeatmin="0" type="pascal"/>
+            <string name="toIndent" id="20" repeatmin="0" type="pascal"/>
+            <number name="lonx" id="21" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="laty" id="22" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="altitude" id="23" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="headingTrueDeg" id="24" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="headingMagDeg" id="25" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="groundSpeedKts" id="26" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="indicatedSpeedKts" id="27" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="verticalSpeedFeetPerMin" id="28" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="indicatedAltitudeFt" id="29" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="trueAirspeedKts" id="30" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="machSpeed" id="31" type="float" length="32" lengthunit="bit" endian="big"/>
+            <number name="numberOfEngines" id="32" type="integer" length="1"/>
+            <number name="wingSpanFt" id="33" type="integer" length="2" endian="big"/>
+            <number name="modelRadiusFt" id="34" type="integer" length="2" endian="big"/>
+            <number name="deckHeight" id="35" type="integer" length="2" endian="big"/>
+            <number name="categoryByte" id="36" type="integer" length="1"/>
+            <number name="engineTypeByte" id="37" type="integer" length="1"/>
+            <number name="transponderCode" id="38" type="integer" length="2" display="octal"/>
+            <number name="properties" id="39" type="integer" length="2"/>
+        </structure>
+        <structure name="LittleXPConnect" id="1" length="0" encoding="ISO_8859-1:1987" endian="little" signed="no">
+            <number name="Magic Number" id="2" fillcolor="FFF400" type="integer" length="4" endian="big" display="hex"/>
+            <number name="Packet Size" id="3" fillcolor="00EAE3" type="integer" length="4" endian="big"/>
+            <number name="Version" id="4" fillcolor="00FF00" type="integer" length="4" endian="big"/>
+            <number name="PacketID" id="5" type="integer" length="4"/>
+            <number name="PacketTS" id="6" type="integer" length="4"/>
+            <number name="hasUser" id="7" fillcolor="FFA000" type="integer" length="1" endian="big"/>
+            <structref name="User Aircraft" id="77" structure="id:8"/>
+            <number name="nAI" id="74" type="integer" length="2" endian="big"/>
+            <structref name="Aircraft" id="79" structure="id:9"/>
+            <number name="nMETAR" id="80" disabled="yes" type="integer" length="2" endian="big"/>
+        </structure>
+    </grammar>
+</ufwb>

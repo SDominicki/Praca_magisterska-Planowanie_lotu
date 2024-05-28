@@ -1,8 +1,9 @@
 from simple_pid import PID
 import serial
 import time
-from flightgear_python.fg_if import TelnetConnection
+from flightgear_python.fg_if import TelnetConnection, HTTPConnection
 from xml_reader import xml_reader
+import math
 
 points = xml_reader()
 point_len = len(points)
@@ -10,103 +11,6 @@ i=0
 x=0
 
 arduino = serial.Serial(port='COM5', baudrate=115200, timeout=0.01)
-
-roll_deg_setpoint = 0.0
-pitch_deg_setpoint = 0.0
-heading_setpoint = 0.0
-climb_rate_setpoint = 9.0
-sm = 0
-
-pid_roll = PID(15, 1, 0.3, setpoint=roll_deg_setpoint, output_limits=(-0.5,0.5), sample_time=0.5, starting_output=0)
-pid_pitch = PID(1.1, 0.1, 0.3, setpoint=pitch_deg_setpoint, output_limits=(-0.1,0.1), sample_time=0.5, starting_output=0)
-pid_heading = PID(1.1, 0.1, 0.3, setpoint=heading_setpoint, output_limits=(-0.1,0.1), sample_time=0.5, starting_output=0)
-pid_climb_rate = PID(0.16, 0.5, 0, setpoint=climb_rate_setpoint*60, output_limits=(-0.1,0.1), sample_time=0.5, starting_output=0)
-
-telnet_conn = TelnetConnection('localhost', 5500)
-telnet_conn.connect()  # Make an actual connection
-
-def roll_calculator():
-
-    roll_deg = telnet_conn.get_prop('/orientation/roll-deg')
-
-    roll_error = roll_deg_setpoint - roll_deg  # Calculate error
-    
-    roll_constant = 0.1
-
-    if (roll_error >= 0.01):
-        aileron_tbs = roll_error * ((pid_roll(roll_deg))*roll_constant)
-
-    if (roll_error <= 0.01):
-        aileron_tbs = roll_error * -((pid_roll(roll_deg))*roll_constant)
-
-    #print(f"Roll error = {round(roll_error,2)}")
-
-    return aileron_tbs
-
-def pitch_calculator():
-
-    pitch_deg = telnet_conn.get_prop('/orientation/pitch-deg')
-
-    pitch_error = pitch_deg_setpoint - pitch_deg  # Calculate error
-    
-    pitch_constant = 0.1
-
-    if (pitch_error >= 0.1):
-        elevator_tbs = pitch_error * ((pid_pitch(pitch_deg))*pitch_constant)
-
-    if (pitch_error <= -0.1):
-        elevator_tbs = pitch_error * -((pid_pitch(pitch_deg))*pitch_constant)
-
-    print(f"Pitch error = {round(pitch_error,2)}")
-
-    return elevator_tbs
-
-def climb_rate_calculator():
-
-    climb_rate = (telnet_conn.get_prop('/velocities/vertical-speed-fps')) * 60
-
-    climb_rate_error = climb_rate_setpoint*60 - climb_rate  # Calculate error
-    
-    climb_rate_constant = 0.003
-
-    if (climb_rate_error >= 50):
-        elevator_tbs = climb_rate_error * -(pid_climb_rate(climb_rate)*climb_rate_constant)
-
-    if (climb_rate_error <= -50):
-        elevator_tbs = climb_rate_error * (pid_climb_rate(climb_rate)*climb_rate_constant)
-
-    if (climb_rate_error < 50 and climb_rate_error > -50):
-        elevator_tbs = climb_rate_error * (pid_climb_rate(climb_rate)*(climb_rate_constant*0.3))
-
-    print(f"Climb rate error = {round(climb_rate_error,2)} ; Climb rate = {round(climb_rate,2)} ; Elevator tbs = {round(elevator_tbs,2)}")
-    
-    return elevator_tbs
-
-def heading_calculator():
-
-    heading_deg = telnet_conn.get_prop('/orientation/track-magnetic-deg')
-
-    heading_error = heading_setpoint - heading_deg
-
-    if -360 <= heading_error <= -180:
-        true_heading_error = heading_error + 360
-    elif 180 <= heading_error <= 360:
-        true_heading_error = heading_error - 360
-    else:
-        true_heading_error = heading_error
-
-    return true_heading_error
-
-def position_sender():
-
-    longitude = telnet_conn.get_prop('/position/longitude-deg')
-    latitude = telnet_conn.get_prop('/position/latitude-deg')
-
-    position = f"{longitude};{latitude}" #16.88583374;51.10277939
-    arduino.flush()
-    arduino.write(bytes(position.encode()))
-
-    return
 
 while arduino.readline().decode() != 'ReadyA':
         time.sleep(0.05)
@@ -130,29 +34,179 @@ while i < len(points):
 time.sleep(1)
 arduino.flush()
 
-while arduino.readline().decode() != 'ReadyA':
-        time.sleep(0.05)
-        arduino.write(bytes("ReadyP", 'utf-8'))
+sm = 0
+last_flight_phase = 0
+elevator_tbs = 0.0
+aileron_tbs = 0.0
+turn_radius = 0.8 #Nautical Miles
+
+pid_roll =       PID(0.05, 0.005, 0.05, output_limits=(-0.5,0.5), starting_output=0)
+pid_small_roll = PID(0.1, 0.01, 0.06, output_limits=(-2.5,2.5), starting_output=0)
+pid_climb_rate = PID(-0.4, -0.2, -0.6, setpoint=0.0, output_limits=(-0.25,0.25), starting_output=0)
+
+telnet_conn = TelnetConnection('localhost', 5500)
+#telnet_conn = HTTPConnection('localhost', 8080)
+telnet_conn.connect()  # Make an actual connection
+
+telnet_conn.set_prop('/controls/flight/aileron-trim', 0)
+telnet_conn.set_prop('/controls/flight/elevator-trim', 0)
+telnet_conn.set_prop('/controls/flight/rudder-trim', 0)
+telnet_conn.set_prop('/controls/flight/rudder-trim', 0)
+telnet_conn.set_prop('/controls/flight/flaps', 0)
+telnet_conn.set_prop('/controls/engines/engine/throttle', 0.75)
+telnet_conn.set_prop('/controls/engines/engine[1]/throttle', 0.75)
+telnet_conn.set_prop('/controls/engines/engine[2]/throttle', 0.75)
+
+arduino.timeout = 0.1
+
+def limiter(n, min_n, max_n):
+
+    if n < min_n:
+        return min_n
+
+    if n > max_n:
+        return max_n
+
+    else:
+        return n
+
+def position_getter():
+
+    longitude = telnet_conn.get_prop('/position/model/longitude-deg')
+    latitude = telnet_conn.get_prop('/position/model/latitude-deg')
+
+    position = f"{longitude};{latitude}" #16.88583374;51.10277939
+    arduino.write(bytes(position.encode()))
+    return 
+
+def speed_getter():
+    true_airspeed = float(telnet_conn.get_prop('/fdm/jsbsim/velocities/vtrue-kts'))
+    return true_airspeed
+
+def arduino_reader():
+    msg = arduino.readline().decode()
+    return msg
+
+def roll_calculator():
+
+    roll_deg = telnet_conn.get_prop('/orientation/model/roll-deg')
+    
+    roll_error = roll_deg - pid_roll.setpoint   # Calculate error
+    
+    roll_constant = 0.1
+
+    aileron_tbs = previous_aileron + ((pid_roll(roll_error))*roll_constant)
+
+    return aileron_tbs
+
+def small_roll_calculator():
+
+    roll_deg = telnet_conn.get_prop('/orientation/model/roll-deg')
+
+    if (pid_small_roll.setpoint - 0.5 < roll_deg < pid_small_roll.setpoint + 0.5):
+
+        aileron_tbs = previous_aileron
+        
+    else:
+
+        roll_error = roll_deg - pid_small_roll.setpoint  # Calculate error
+
+        roll_constant = 0.1
+
+        aileron_tbs = previous_aileron + ((pid_small_roll(roll_error))*roll_constant)
+
+    return aileron_tbs
+
+def climb_rate_calculator():
+
+    
+    climb_rate = (telnet_conn.get_prop('/velocities/vertical-speed-fps'))
+    
+    if (pid_climb_rate.setpoint - 0.2 < climb_rate < pid_climb_rate.setpoint + 0.2):
+
+        elevator_tbs = previous_elevator
+    else:
+
+        climb_rate_error = climb_rate + pid_climb_rate.setpoint  # Calculate error
+        
+        climb_rate_constant = 0.1
+
+        elevator_tbs = previous_elevator + (pid_climb_rate(climb_rate_error)*climb_rate_constant)
+
+    return elevator_tbs
 
 while True:
-
-    start = time.time()
-
-    position_sender()
-
-    #alt_ft = telnet_conn.get_prop('/position/altitude-ft')
     
+    #start = time.time()
+
     if(sm==0):
-        elevator_tbs = climb_rate_calculator()
-        telnet_conn.set_prop('/controls/flight/elevator', elevator_tbs)
+        position_getter()
+    time.sleep(0.01)
+
+    flight_phase = arduino.read(1).decode('utf_8')
+    if flight_phase!='':
+        flight_phase = int(flight_phase)
+
+    if type(flight_phase)==str:
+        flight_phase=last_flight_phase
+    #print(flight_phase)
+
+    if flight_phase == 0:
+        #print("fp=0")
+        pid_small_roll.setpoint = 0.5
+    if flight_phase == 1:
+        #print("fp=1")
+        true_airspeed = speed_getter()*0.5144
+        pid_roll.setpoint = -math.degrees(math.atan((true_airspeed*true_airspeed)/((turn_radius*1852)*9.81)))
+        print(pid_roll.setpoint)
+    if flight_phase == 2:
+        #print("fp=2")
+        true_airspeed = speed_getter()*0.5144
+        pid_roll.setpoint = math.degrees(math.atan((true_airspeed*true_airspeed)/((turn_radius*1852)*9.81)))
+        print(pid_roll.setpoint)
+    if flight_phase == 3:
+        #print("fp=3")
+        pid_small_roll.setpoint = -2.0
+    if flight_phase == 4:
+        #print("fp=4")
+        pid_small_roll.setpoint = 2.0
+    
     if(sm==1):
-        aileron_tbs = roll_calculator()
-        telnet_conn.set_prop('/controls/flight/aileron', aileron_tbs)
+        elevator_tbs = limiter(climb_rate_calculator(),-0.05,0.05)
+        telnet_conn.set_prop('/controls/flight/elevator', elevator_tbs)
+
+    if(sm==2):
+
+        if  flight_phase == 0:
+            aileron_tbs = limiter(small_roll_calculator(),-0.1,0.3)
+
+        if flight_phase == 1:
+            aileron_tbs = limiter(roll_calculator(),-0.2,0.4)
+                
+        if flight_phase == 2:
+            aileron_tbs = limiter(roll_calculator(),-0.2,0.4)
+                
+        if  flight_phase == 3:
+            aileron_tbs = limiter(small_roll_calculator(),-0.05,0.1)
+
+        if  flight_phase == 4:
+            aileron_tbs = limiter(small_roll_calculator(),-0.025,0.3)
+            
+        if  type(flight_phase)!=str:
+            print(f"Aileron tbs = {aileron_tbs}")
+            telnet_conn.set_prop('/controls/flight/aileron', aileron_tbs)
 
     sm = sm+1
-    
-    if(sm>=2):
-        sm=0
 
-    end = time.time()
+    previous_elevator = elevator_tbs
+    previous_aileron = aileron_tbs
+
+    if(sm>=3):
+        sm=0
+    
+    if type(flight_phase)!=str:
+        last_flight_phase = flight_phase
+
+    #end = time.time()
+    
     #print(f"Loop time = {round(end-start,2)}")

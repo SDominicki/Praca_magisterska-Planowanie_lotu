@@ -13,8 +13,8 @@ def xml_reader():
 
     for match in wp:
 
-        wp_altitude = match.find_all('altitude-ft')
-        altitude_val = int(wp_altitude[0].contents[0])
+        #wp_altitude = match.find_all('altitude-ft')
+        #altitude_val = int(wp_altitude[0].contents[0])
 
         wp_lon = match.find_all('lon')
         lon_val = float(wp_lon[0].contents[0])
@@ -22,8 +22,8 @@ def xml_reader():
         wp_lat = match.find_all('lat')
         lat_val = float(wp_lat[0].contents[0])
 
-        wp_id = match.find_all('ident')
-        id_name = wp_id[0].contents[0]
+        #wp_id = match.find_all('ident')
+        #id_name = wp_id[0].contents[0]
 
         points.append(lon_val)
         points.append(lat_val)

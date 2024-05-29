@@ -38,10 +38,12 @@ sm = 0
 last_flight_phase = 0
 elevator_tbs = 0.0
 aileron_tbs = 0.0
+previous_elevator = elevator_tbs
+previous_aileron = aileron_tbs
 turn_radius = 0.8 #Nautical Miles
 
 pid_roll =       PID(0.05, 0.005, 0.05, output_limits=(-0.5,0.5), starting_output=0)
-pid_small_roll = PID(0.1, 0.01, 0.06, output_limits=(-2.5,2.5), starting_output=0)
+pid_small_roll = PID(0.05, 0.01, 0.05, output_limits=(-1.5,1.5), starting_output=0)
 pid_climb_rate = PID(-0.4, -0.2, -0.6, setpoint=0.0, output_limits=(-0.25,0.25), starting_output=0)
 
 telnet_conn = TelnetConnection('localhost', 5500)
@@ -119,12 +121,12 @@ def small_roll_calculator():
 
 def climb_rate_calculator():
 
-    
     climb_rate = (telnet_conn.get_prop('/velocities/vertical-speed-fps'))
     
     if (pid_climb_rate.setpoint - 0.2 < climb_rate < pid_climb_rate.setpoint + 0.2):
 
         elevator_tbs = previous_elevator
+
     else:
 
         climb_rate_error = climb_rate + pid_climb_rate.setpoint  # Calculate error
@@ -149,59 +151,64 @@ while True:
 
     if type(flight_phase)==str:
         flight_phase=last_flight_phase
-    #print(flight_phase)
+        
+    print(flight_phase)
 
     if flight_phase == 0:
-        #print("fp=0")
-        pid_small_roll.setpoint = 0.5
+
+        pid_small_roll.setpoint = 0.0
+        #print("Lot poziomy")
+        aileron_tbs = limiter(small_roll_calculator(),-0.2,0.2)
+
     if flight_phase == 1:
-        #print("fp=1")
+
         true_airspeed = speed_getter()*0.5144
         pid_roll.setpoint = -math.degrees(math.atan((true_airspeed*true_airspeed)/((turn_radius*1852)*9.81)))
         print(pid_roll.setpoint)
+        #print("Zakręt w lewo")
+        aileron_tbs = limiter(roll_calculator(),-0.4,0.4)
+
     if flight_phase == 2:
-        #print("fp=2")
+        
         true_airspeed = speed_getter()*0.5144
         pid_roll.setpoint = math.degrees(math.atan((true_airspeed*true_airspeed)/((turn_radius*1852)*9.81)))
         print(pid_roll.setpoint)
+        #print("Zakręt w prawo")
+        aileron_tbs = limiter(roll_calculator(),-0.4,0.4)
+
     if flight_phase == 3:
-        #print("fp=3")
-        pid_small_roll.setpoint = -2.0
+        
+        pid_small_roll.setpoint = -3.0
+        #print("Korekta w lewo")
+        aileron_tbs = limiter(small_roll_calculator(),-0.3,0.2)
+
     if flight_phase == 4:
-        #print("fp=4")
-        pid_small_roll.setpoint = 2.0
+        
+        pid_small_roll.setpoint = 3.0
+        #print("Korekta w prawo")
+        aileron_tbs = limiter(small_roll_calculator(),-0.2,0.3)
+
+    if flight_phase == 5:
+
+        true_airspeed = speed_getter()*0.5144
+        pid_roll.setpoint = math.degrees(math.atan((true_airspeed*true_airspeed)/((0.6*1852)*9.81)))
+        #print("Zawracanie")
+        aileron_tbs = limiter(roll_calculator(),-0.4,0.4)
+
+    if  type(flight_phase)!=str:
+        #print(f"Aileron tbs = {aileron_tbs}")
+        telnet_conn.set_prop('/controls/flight/aileron', aileron_tbs)
     
     if(sm==1):
         elevator_tbs = limiter(climb_rate_calculator(),-0.05,0.05)
         telnet_conn.set_prop('/controls/flight/elevator', elevator_tbs)
-
-    if(sm==2):
-
-        if  flight_phase == 0:
-            aileron_tbs = limiter(small_roll_calculator(),-0.1,0.3)
-
-        if flight_phase == 1:
-            aileron_tbs = limiter(roll_calculator(),-0.2,0.4)
-                
-        if flight_phase == 2:
-            aileron_tbs = limiter(roll_calculator(),-0.2,0.4)
-                
-        if  flight_phase == 3:
-            aileron_tbs = limiter(small_roll_calculator(),-0.05,0.1)
-
-        if  flight_phase == 4:
-            aileron_tbs = limiter(small_roll_calculator(),-0.025,0.3)
-            
-        if  type(flight_phase)!=str:
-            print(f"Aileron tbs = {aileron_tbs}")
-            telnet_conn.set_prop('/controls/flight/aileron', aileron_tbs)
-
+ 
     sm = sm+1
 
     previous_elevator = elevator_tbs
     previous_aileron = aileron_tbs
 
-    if(sm>=3):
+    if(sm>=2):
         sm=0
     
     if type(flight_phase)!=str:

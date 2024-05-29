@@ -15,10 +15,14 @@ int len = 0;
 int i = 0;
 int n = 0;
 int m = 0;
+int U_turn_began = 0;
+
+int delta_counter = 0;
+float distance_from_point = 0.0;
 
 String previous_position = "";
 
-float turn_radius = 0.2; //nautical miles
+float turn_radius = 0.4; //nautical miles
 float turn_diameter = (turn_radius*2)/60;
 
 void setup() 
@@ -75,15 +79,15 @@ void loop()
 {
   position_getter();
 
-  state_machine = intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter);
+  state_machine = intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,1);
 
   switch (state_machine) 
   {
   case 1:
     turn_counter = turn_counter + 2;
-    intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter);
+    intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,1);
     delay(300);
-    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter)!=0)
+    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,8)!=0)
     {
       position_getter();
       Serial.print(1);
@@ -94,9 +98,9 @@ void loop()
   
   case 2:
     turn_counter = turn_counter + 2;
-    intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter);
+    intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,1);
     delay(300);
-    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter)!=0)
+    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,8)!=0)
     {
       position_getter();
       Serial.print(2);
@@ -108,7 +112,8 @@ void loop()
   case 7:
     turn_counter = turn_counter + 2;
     break;
-  default :
+
+  default:
 
     Serial.print(state_machine);
     
@@ -116,10 +121,11 @@ void loop()
     lcd.print(state_machine);
     lcd.setCursor(14, 1);
     lcd.print(turn_counter);
+    lcd.setCursor(15, 1);
+    lcd.print(delta_counter);
     
     Plane_prev[0] = Plane_curr[0];
     Plane_prev[1] = Plane_curr[1];
-    break;
   }
 }
 
@@ -137,7 +143,7 @@ void position_getter()
   delay(100);
 }
 
-int intersector_checker(float x_A, float y_A, float x_B, float y_B, float x_C , float y_C, int counter)
+int intersector_checker(float x_A, float y_A, float x_B, float y_B, float x_C , float y_C, int counter, int multiplier)
 {
   //https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
   int intersector = 8;
@@ -152,19 +158,19 @@ int intersector_checker(float x_A, float y_A, float x_B, float y_B, float x_C , 
   float real_radius = 0.25/60;
   float target_angle = 3;
 
-  float target_radius = (globe_distance_calculator(x_B,y_B,x_C,y_C)*tan(radians(target_angle)))/60;
+  distance_from_point = globe_distance_calculator(x_A,y_A,x_C,y_C);
+
+  float target_radius = ((distance_from_point*tan(radians(target_angle)))*multiplier)/60;
+
+    lcd.setCursor(0, 0);
+    lcd.print("Dist to point");
+    lcd.setCursor(0, 1);
+    lcd.print(distance_from_point,4);
 
   if (target_radius <= real_radius/5)
   {
     target_radius = real_radius;
   }
-
-  lcd.setCursor(0, 0);
-  //lcd.print("NM to point:");
-  lcd.print(target_radius,8);
-  lcd.setCursor(0, 1);
-  //lcd.print(globe_distance_calculator(x_B,y_B,x_C,y_C),8);
-  lcd.print(real_radius,8);
 
   if (distance_calculator(x_B, y_B, x_C, y_C) <= real_radius) 
   {
@@ -181,6 +187,39 @@ int intersector_checker(float x_A, float y_A, float x_B, float y_B, float x_C , 
     vector_AB[0] = (x_B-x_A);
     vector_AB[1] = (y_B-y_A);
 
+    bool vectors_X_same_signs = (vector_AC[0] > 0 && vector_AB[0] >  0) || (vector_AC[0] < 0 && vector_AB[0] <  0);
+    bool vectors_Y_same_signs = (vector_AC[1] > 0 && vector_AB[1] >  0) || (vector_AC[1] < 0 && vector_AB[1] <  0);
+
+    if (vectors_X_same_signs != true && vectors_Y_same_signs != true) 
+    {
+    delta_counter = delta_counter + 1;
+    }
+
+    if (vectors_X_same_signs == true && vectors_Y_same_signs == true) 
+    {
+    delta_counter = 0;
+    U_turn_began = 0;
+    }
+
+    if (delta_counter >= 2)
+    {
+      if (U_turn_began != 1) 
+      {
+        switch (Turns[turn_counter]) 
+        {
+          case 1:
+            Turns[turn_counter] = 2;
+            break;
+
+          case 2:
+            Turns[turn_counter] = 1;
+            break;
+        }
+      }
+      U_turn_began = 1;
+      intersector = 5;
+      return intersector;
+    }
     float point_D[2] = {0,0};
 
     float dot_product_AB = dot_product_calculator(vector_AC[0],vector_AC[1],vector_AB[0],vector_AB[1]);

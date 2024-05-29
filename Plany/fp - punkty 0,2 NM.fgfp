@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PropertyList>
   <version type="int">2</version>
-  <source type="string">Created by Little Navmap Version 3.0.5 (revision b4eecb60) on 2024 05 29T08:46:55</source>
+  <source type="string">Created by Little Navmap Version 3.0.5 (revision b4eecb60) on 2024 05 29T08:13:49</source>
   <departure>
     <airport type="string">EPWR</airport>
   </departure>
@@ -19,7 +19,7 @@
     <wp n="1">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">1987</altitude-ft>
+      <altitude-ft type="double">1939</altitude-ft>
       <ident type="string">WR491</ident>
       <lon type="double">16.77278137</lon>
       <lat type="double">51.13733292</lat>
@@ -27,20 +27,36 @@
     <wp n="2">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">2487</altitude-ft>
-      <ident type="string">WR492</ident>
-      <lon type="double">16.73703003</lon>
-      <lat type="double">51.14819336</lat>
+      <altitude-ft type="double">2579</altitude-ft>
+      <ident type="string">WR366</ident>
+      <lon type="double">16.72613525</lon>
+      <lat type="double">51.12228012</lat>
     </wp>
     <wp n="3">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">10000</altitude-ft>
-      <ident type="string">IPSOD</ident>
-      <lon type="double">17.43278503</lon>
-      <lat type="double">50.86833191</lat>
+      <altitude-ft type="double">2635</altitude-ft>
+      <ident type="string">WR386</ident>
+      <lon type="double">16.72192383</lon>
+      <lat type="double">51.12339020</lat>
     </wp>
     <wp n="4">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">3151</altitude-ft>
+      <ident type="string">WR492</ident>
+      <lon type="double">16.73703003</lon>
+      <lat type="double">51.14819336</lat>
+    </wp>
+    <wp n="5">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">7059</altitude-ft>
+      <ident type="string">GUPMA</ident>
+      <lon type="double">17.01834106</lon>
+      <lat type="double">51.24444580</lat>
+    </wp>
+    <wp n="6">
       <approach type="bool">true</approach>
       <type type="string">navaid</type>
       <ident type="string">EPWA</ident>

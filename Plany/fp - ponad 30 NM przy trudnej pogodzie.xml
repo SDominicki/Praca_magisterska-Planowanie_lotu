@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PropertyList>
+  <version type="int">2</version>
+  <source type="string">Created by Little Navmap Version 3.0.5 (revision b4eecb60) on 2024 06 03T17:15:35</source>
+  <departure>
+    <airport type="string">EPWR</airport>
+  </departure>
+  <destination>
+    <airport type="string">EPWR</airport>
+  </destination>
+  <route>
+    <wp n="0">
+      <departure type="bool">true</departure>
+      <type type="string">navaid</type>
+      <ident type="string">EPWR</ident>
+      <lon type="double">16.88583374</lon>
+      <lat type="double">51.10277557</lat>
+    </wp>
+    <wp n="1">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">4488</altitude-ft>
+      <ident type="string">WR493</ident>
+      <lon type="double">16.61082458</lon>
+      <lat type="double">51.18647385</lat>
+    </wp>
+    <wp n="2">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">6437</altitude-ft>
+      <ident type="string">WR607</ident>
+      <lon type="double">16.67416382</lon>
+      <lat type="double">51.26891708</lat>
+    </wp>
+    <wp n="3">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">7059</altitude-ft>
+      <ident type="string">WR904</ident>
+      <lon type="double">17.07833862</lon>
+      <lat type="double">51.25816727</lat>
+    </wp>
+    <wp n="4">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">7059</altitude-ft>
+      <ident type="string">NUDRO</ident>
+      <lon type="double">17.32556152</lon>
+      <lat type="double">51.16527557</lat>
+    </wp>
+    <wp n="5">
+      <type type="string">navaid</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">3119</altitude-ft>
+      <ident type="string">WR363</ident>
+      <lon type="double">17.08633423</lon>
+      <lat type="double">51.04100037</lat>
+    </wp>
+    <wp n="6">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">1400</altitude-ft>
+      <ident type="string">RW29+3</ident>
+      <lon type="double">16.96954346</lon>
+      <lat type="double">51.07701111</lat>
+    </wp>
+    <wp n="7">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">403</altitude-ft>
+      <ident type="string">RW29</ident>
+      <lon type="double">16.89801025</lon>
+      <lat type="double">51.09894180</lat>
+    </wp>
+    <wp n="8">
+      <approach type="bool">true</approach>
+      <type type="string">navaid</type>
+      <ident type="string">EPWR</ident>
+      <lon type="double">16.88583374</lon>
+      <lat type="double">51.10277557</lat>
+    </wp>
+  </route>
+</PropertyList>

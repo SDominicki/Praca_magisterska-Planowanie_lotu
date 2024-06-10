@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PropertyList>
   <version type="int">2</version>
-  <source type="string">Created by Little Navmap Version 3.0.5 (revision b4eecb60) on 2024 06 05T11:38:33</source>
+  <source type="string">Created by Little Navmap Version 3.0.5 (revision b4eecb60) on 2024 06 05T13:00:12</source>
   <departure>
     <airport type="string">EPWR</airport>
   </departure>
@@ -19,7 +19,7 @@
     <wp n="1">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">1375</altitude-ft>
+      <altitude-ft type="double">1378</altitude-ft>
       <ident type="string">WR901</ident>
       <lon type="double">16.81727600</lon>
       <lat type="double">51.12363815</lat>
@@ -27,20 +27,36 @@
     <wp n="2">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">3408</altitude-ft>
+      <altitude-ft type="double">3416</altitude-ft>
       <ident type="string">WR752</ident>
       <lon type="double">16.69583130</lon>
       <lat type="double">51.05889130</lat>
     </wp>
     <wp n="3">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">3955</altitude-ft>
+      <ident type="string">WP1</ident>
+      <lon type="double">16.65612030</lon>
+      <lat type="double">51.06762695</lat>
+    </wp>
+    <wp n="4">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">5263</altitude-ft>
+      <altitude-ft type="double">5278</altitude-ft>
       <ident type="string">WR753</ident>
       <lon type="double">16.55847168</lon>
       <lat type="double">51.08880615</lat>
     </wp>
-    <wp n="4">
+    <wp n="5">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">6679</altitude-ft>
+      <ident type="string">WP2</ident>
+      <lon type="double">16.66607857</lon>
+      <lat type="double">51.10154343</lat>
+    </wp>
+    <wp n="6">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
       <altitude-ft type="double">7059</altitude-ft>
@@ -48,23 +64,39 @@
       <lon type="double">16.72247314</lon>
       <lat type="double">51.10805511</lat>
     </wp>
-    <wp n="5">
+    <wp n="7">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">6039</altitude-ft>
+      <ident type="string">WP3</ident>
+      <lon type="double">16.65154839</lon>
+      <lat type="double">51.15800095</lat>
+    </wp>
+    <wp n="8">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">5238</altitude-ft>
+      <altitude-ft type="double">5237</altitude-ft>
       <ident type="string">WR603</ident>
       <lon type="double">16.61079407</lon>
       <lat type="double">51.18644714</lat>
     </wp>
-    <wp n="6">
+    <wp n="9">
+      <type type="string">basic</type>
+      <alt-restrict type="string">at</alt-restrict>
+      <altitude-ft type="double">4003</altitude-ft>
+      <ident type="string">WP4</ident>
+      <lon type="double">16.52378464</lon>
+      <lat type="double">51.16435623</lat>
+    </wp>
+    <wp n="10">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
-      <altitude-ft type="double">2649</altitude-ft>
+      <altitude-ft type="double">2648</altitude-ft>
       <ident type="string">WR631</ident>
       <lon type="double">16.42845154</lon>
       <lat type="double">51.13994217</lat>
     </wp>
-    <wp n="7">
+    <wp n="11">
       <type type="string">navaid</type>
       <alt-restrict type="string">at</alt-restrict>
       <altitude-ft type="double">906</altitude-ft>
@@ -72,7 +104,7 @@
       <lon type="double">16.54766846</lon>
       <lat type="double">51.10394287</lat>
     </wp>
-    <wp n="8">
+    <wp n="12">
       <approach type="bool">true</approach>
       <type type="string">navaid</type>
       <ident type="string">GIGAL</ident>

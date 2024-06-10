@@ -17,6 +17,7 @@ int n = 0;
 int m = 0;
 int U_turn_began = 0;
 
+float intersector_multiplier = 1;
 int delta_counter = 0;
 float distance_from_point = 0.0;
 
@@ -60,7 +61,7 @@ void setup()
     Serial.flush();
     delay(100);
 
-    while (iteration <= len-6)
+    while (iteration <= len-4)
     {
       turnpoint_calculator(GPS[iteration],GPS[iteration+1],GPS[iteration+2],GPS[iteration+3],GPS[iteration+4],GPS[iteration+5],iteration);
       iteration = iteration + 2;
@@ -80,6 +81,8 @@ void loop()
   position_getter();
 
   state_machine = intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,1);
+  
+  intersector_multiplier = (globe_distance_calculator(Tangents[turn_counter],Tangents[turn_counter+1],Tangents[turn_counter+2],Tangents[turn_counter+3]))/2;
 
   switch (state_machine) 
   {
@@ -87,7 +90,7 @@ void loop()
     turn_counter = turn_counter + 2;
     intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,1);
     delay(300);
-    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,8)!=0)
+    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,intersector_multiplier)!=0)
     {
       position_getter();
       Serial.print(1);
@@ -100,7 +103,7 @@ void loop()
     turn_counter = turn_counter + 2;
     intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,1);
     delay(300);
-    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,8)!=0)
+    while(intersector_checker(Plane_prev[0],Plane_prev[1],Plane_curr[0],Plane_curr[1],Tangents[turn_counter],Tangents[turn_counter+1],turn_counter,intersector_multiplier)!=0)
     {
       position_getter();
       Serial.print(2);
@@ -117,12 +120,12 @@ void loop()
 
     Serial.print(state_machine);
     
-    lcd.setCursor(14, 0);
-    lcd.print(state_machine);
-    lcd.setCursor(14, 1);
-    lcd.print(turn_counter);
-    lcd.setCursor(15, 1);
-    lcd.print(delta_counter);
+    //lcd.setCursor(14, 0);
+    //lcd.print(state_machine);
+    //lcd.setCursor(14, 1);
+    //lcd.print(turn_counter);
+    //lcd.setCursor(15, 1);
+    //lcd.print(delta_counter);
     
     Plane_prev[0] = Plane_curr[0];
     Plane_prev[1] = Plane_curr[1];
@@ -163,9 +166,11 @@ int intersector_checker(float x_A, float y_A, float x_B, float y_B, float x_C , 
   float target_radius = ((distance_from_point*tan(radians(target_angle)))*multiplier)/60;
 
     lcd.setCursor(0, 0);
-    lcd.print("Dist to point");
+    lcd.print(Tangents[turn_counter],5);
+    //lcd.print("Dist to point");
     lcd.setCursor(0, 1);
-    lcd.print(distance_from_point,4);
+    lcd.print(Tangents[turn_counter+1],5);
+    //lcd.print(distance_from_point,4);
 
   if (target_radius <= real_radius/5)
   {
@@ -273,6 +278,14 @@ int intersector_checker(float x_A, float y_A, float x_B, float y_B, float x_C , 
 
 float turnpoint_calculator(float GPS_1_x, float GPS_1_y, float GPS_2_x, float GPS_2_y, float GPS_3_x, float GPS_3_y, int iteration)
 {
+  if (iteration == len - 4)
+  {
+  Tangents[iteration] = GPS[len-2];
+  Tangents[iteration+1] = GPS[len-1];
+  Turns[iteration] = 7;
+  return;
+  }
+
   float GPS_1[2] = {0,0};
   float GPS_2[2] = {0,0};
   float P[2] = {0,0};
@@ -319,6 +332,7 @@ float turnpoint_calculator(float GPS_1_x, float GPS_1_y, float GPS_2_x, float GP
   }
   if (angle_degrees < 170)
   {
+    
   float distance_from_circle_center = (turn_diameter/2)/(sin(resultAngle/2));
 
   positive_angled[0] = P[0] + cos(resultAngle/2) * (GPS_1[0] - P[0]) - sin(resultAngle/2) * (GPS_1[1] - P[1]);    //https://stackoverflow.com/questions/34372480/rotate-point-about-another-point-in-degrees-python
@@ -371,18 +385,6 @@ float turnpoint_calculator(float GPS_1_x, float GPS_1_y, float GPS_2_x, float GP
   Tangents[iterator] = tangent_1[0];
   Tangents[iterator+1] = tangent_1[1];
   Turns[iterator] = turn_direction;
-  /*  
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(Tangents[iterator],8);
-  lcd.setCursor(14, 0);
-  lcd.print(iterator);
-  lcd.setCursor(0, 1);
-  lcd.print(Tangents[iterator+1],8);
-  lcd.setCursor(14, 1);
-  lcd.print(Turns[iterator]);
-  delay(3000);
-  */
 }
 
 float globe_distance_calculator(float GPS_1_x, float GPS_1_y, float GPS_2_x, float GPS_2_y) //https://edwilliams.org/avform147.htm#GCF

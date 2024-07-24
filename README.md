@@ -1,7 +1,1 @@
-# ŹRÓDŁA:
-[STEROWNIK PID](https://pypi.org/project/simple-pid/)\
-[SYMULATOR PID](http://jtjt.pl/symulator-pid)\
-[PRZYKŁADOWY KOD](https://flightgear-python.readthedocs.io/en/latest/examples.html)\
-[ELEMENTY STEROWALNE W PROGRAMIE](https://flightgear-python.readthedocs.io/en/latest/_autosummary/flightgear_python.ctrls_v27.ctrls_struct.html#flightgear_python.ctrls_v27.ctrls_struct)\
-[ELEMENTY "STAŁE" W PROGRAMIE](https://flightgear-python.readthedocs.io/en/latest/_autosummary/flightgear_python.fdm_v24.fdm_struct.html#flightgear_python.fdm_v24.fdm_struct)\
-[SYMBOLE ANGIELSKIE OPISUJĄCE DYNAMIKĘ SAMOLOTU](https://en.wikipedia.org/wiki/Aircraft_flight_dynamics)\
+Kod pracy magisterskiej polegającej na wyznaczeniu drogi samolotu pomiędzy punktami na mapie, zarządzanie lotem (Arduino) oraz sterownik imitujący autopilot (Python). Dodatkowo, dołączony jest excel z obliczeniami i wizualizacją wektorów oraz aplikacja "gconnect" służąca do połączenia programu FlightGear 2020 z Little Navmap.
